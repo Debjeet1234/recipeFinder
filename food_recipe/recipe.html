@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Search</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">LOGO</div>
+            <button id="logout-btn">Logout</button>
+        </header>
+
+        <div class="navigation">
+            <ul>
+                <li class="list"><a href="home.html"><span class="text">Home</span></a></li>
+                <li class="list"><a href="recipe.html"><span class="text">Recipes</span></a></li>
+                <li class="list"><a href="contact.html"><span class="text">Contact</span></a></li>
+            </ul>
+        </div>
+        <br>
+        <div class="navigation" style="padding:2px;width: 600px;margin:0 auto">
+            <ul>
+                <li class="list"><a href="#text">Text</a></li>
+                <li class="list"><a href="#video">Video</a></li>
+            </ul>
+        </div>
+
+        <div class="container" style="background-color: rgba(0, 0, 0, 0.5); opacity: 1; color: white;">
+            <section id="text" class="text">
+                <h2 style="display: flex;justify-content: center;">Text</h2>
+                <br>
+                <div class="search-bar" style="display: flex; flex-direction: column; align-items: center; margin-bottom: 20px;">
+                    <div style="display: flex; gap: 10px;">
+                        <input id="recipe-input" type="text" placeholder="Enter the recipe name" style="padding: 10px; width: 300px; border: 1px solid #ccc; border-radius: 5px;">
+                        <button id="search-btn" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">Search</button>
+                    </div>
+                </div>
+                <textarea id="recipe-details" style="margin-top: 20px; width: 100%; height: 300px; padding: 20px; border: 1px solid #ccc; border-radius: 5px;" placeholder="Recipe details will appear here..." readonly></textarea>
+            </section>
+        </div>
+        <hr>
+        <div class="container" style="background-color: rgba(0, 0, 0, 0.5); opacity: 1; color: white;">
+            <section id="video" class="video">
+                <h2 style="display: flex;justify-content: center;">Video</h2>
+                <br>
+                <div class="search-bar" style="display: flex; align-items: center; margin-bottom: 20px;">
+                    <input type="text" id="search-bar" placeholder="Enter any food recipe..." style="padding: 10px; width: 300px; border: 1px solid #ccc; border-radius: 5px;">
+                    <button id="search-button" style="padding: 10px 20px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">Search</button>
+                </div>
+                <h2>Results:</h2>
+                <div id="video-results"></div>
+                <button id="see-more-button" style="display: none;">See More</button>
+            </section>
+            <button style="background-color: blue;  border: none; padding: 10px;border-radius: 1rem;margin-left: 60rem;"><a href="recipe.html" style="color: white;text-decoration: none;">Back to top</a></button>
+        </div>
+    </div>
+
+    <script>
+        // Function to check if the user is logged in and enforce restrictions
+        function enforceAuthentication() {
+            const loggedInUser = localStorage.getItem("loggedInUser");
+            if (!loggedInUser) {
+                alert("You need to log in to access this page.");
+                window.location.href = "login.html"; // Redirect to the login page
+            }
+        }
+
+        function checkAuthStatus() {
+        const user = localStorage.getItem("loggedInUser");
+        const loginButton = document.getElementById("login-btn");
+        const logoutButton = document.getElementById("logout-btn");
+        const userNameDisplay = document.getElementById("username");
+
+        if (user) {
+            const loggedInUser = JSON.parse(user);
+            loginButton.style.display = "none";
+            logoutButton.style.display = "block";
+            userNameDisplay.innerHTML = `Hello, ${loggedInUser.name}`;
+        } else {
+        loginButton.style.display = "block";
+        logoutButton.style.display = "none";
+        userNameDisplay.innerHTML = "";
+        }
+    }
+
+    // Logout functionality
+    document.getElementById("logout-btn").addEventListener("click", function() {
+        localStorage.removeItem("loggedInUser");
+        checkAuthStatus(); // Update UI on logout
+        window.location.href = "login.html"; // Redirect to login page
+    });
+
+    // Call checkAuthStatus on page load to update the UI
+    window.onload = checkAuthStatus;
+
+        window.onload = function() {
+            enforceAuthentication();  // Ensure user is logged in
+
+            document.getElementById("search-btn").addEventListener("click", async function () {
+                const recipeInput = document.getElementById("recipe-input").value.trim();
+                const recipeDetails = document.getElementById("recipe-details");
+
+                if (!recipeInput) {
+                    alert("Please enter a Recipe Name or ID.");
+                    return;
+                }
+
+                console.log("Searching for recipe:", recipeInput);
+
+                try {
+                    const response = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${recipeInput}`);
+                    const data = await response.json();
+
+                    console.log("API Response:", data);
+
+                    if (data.meals && data.meals.length > 0) {
+                        const meal = data.meals[0];
+
+                        const ingredients = Object.keys(meal)
+                            .filter(key => key.startsWith("strIngredient") && meal[key])
+                            .map(key => {
+                                const measureKey = `strMeasure${key.slice(13)}`;
+                                return `- ${meal[key]} (${meal[measureKey] || "as needed"})`;
+                            });
+
+                        recipeDetails.value = `
+Recipe Name: ${meal.strMeal}
+Category: ${meal.strCategory}
+Area: ${meal.strArea}
+Instructions: ${meal.strInstructions}
+
+Ingredients:
+${ingredients.join("\n")}
+                        `;
+                    } else {
+                        recipeDetails.value = "No recipes found for the given name or ID.";
+                    }
+                } catch (error) {
+                    console.error("Error fetching recipe data:", error);
+                    recipeDetails.value = "An error occurred while fetching the recipe.";
+                }
+            });
+        };
+
+        //video
+
+        const apiKey = 'AIzaSyDo8o_T57tS4cuDpgA1G6r8MSFrvBLyrko'; // Your API key
+let nextPageToken = '';
+let currentQuery = '';
+
+document.getElementById('search-button').addEventListener('click', async () => {
+    const query = document.getElementById('search-bar').value.trim();
+    const videoResults = document.getElementById('video-results');
+    const seeMoreButton = document.getElementById('see-more-button');
+
+    // Clear previous results
+    videoResults.innerHTML = '';
+    seeMoreButton.style.display = 'none';
+    nextPageToken = '';
+    currentQuery = query;
+
+    if (!query) {
+        alert('Please enter a food recipe name');
+        return;
+    }
+
+    await fetchVideos(query);
+});
+
+document.getElementById('see-more-button').addEventListener('click', async () => {
+    if (currentQuery && nextPageToken) {
+        await fetchVideos(currentQuery, nextPageToken);
+    }
+});
+
+async function fetchVideos(query, pageToken = '') {
+    const videoResults = document.getElementById('video-results');
+    const seeMoreButton = document.getElementById('see-more-button');
+
+    const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${query} recipe&type=video&key=${apiKey}&maxResults=6&pageToken=${pageToken}`;
+
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.items && data.items.length > 0) {
+            // Filter videos to ensure relevance to food recipes
+            const filteredVideos = data.items.filter(item => {
+                const title = item.snippet.title.toLowerCase();
+                const description = item.snippet.description.toLowerCase();
+                return title.includes('recipe') || description.includes('recipe');
+            });
+
+            if (filteredVideos.length > 0) {
+                filteredVideos.forEach(item => {
+                    const videoId = item.id.videoId;
+                    const videoTitle = item.snippet.title;
+
+                    // Create a video container with an embedded YouTube video and title
+                    const videoContainer = document.createElement('div');
+                    videoContainer.classList.add('video-container');
+                    videoContainer.innerHTML = `
+                        <iframe 
+                            src="https://www.youtube.com/embed/${videoId}" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                        </iframe>
+                        <p>${videoTitle}</p>
+                    `;
+
+                    videoResults.appendChild(videoContainer);
+                });
+
+                // Update nextPageToken
+                nextPageToken = data.nextPageToken || '';
+                seeMoreButton.style.display = nextPageToken ? 'block' : 'none';
+            } else {
+                // If no relevant videos, show "Not found"
+                videoResults.innerHTML = '<p>Not found</p>';
+                seeMoreButton.style.display = 'none';
+            }
+        } else {
+            // No videos at all, show "Not found"
+            videoResults.innerHTML = '<p>Not found</p>';
+            seeMoreButton.style.display = 'none';
+        }
+    } catch (error) {
+        console.error('Error fetching YouTube videos:', error);
+        alert('Failed to fetch YouTube videos. Please try again later.');
+    }
+}
+
+
+    </script>
+</body>
+</html>

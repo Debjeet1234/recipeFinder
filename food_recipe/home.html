@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Layout Example</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" integrity="sha512-5Hs3dF2AEPkpNAR7UiOHba+lRSJNeM2ECkwxUIxC1Q/FLycGTbNapWXB4tP889k5T5Ju8fs4b1P5z/iB4nMfSQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">LOGO</div>
+            <button id="login-btn"><a href="login.html" style="text-decoration: none; color: white;">Login</a></button>
+             <!-- User name -->
+            <button id="logout-btn" style="display:none;">Logout</button>
+        </header>
+        
+        <div class="navigation">
+            <ul>
+                <li class="list"><span id="username"></span></li>
+                <li class="list">
+                    <a href="home.html">
+                        <span class="text">Home</span>
+                    </a>
+                </li>
+                <li class="list">
+                    <a href="recipe.html">
+                        <span class="text">Recipes</span>
+                    </a>
+                </li>
+                <li class="list">
+                    <a href="contact.html">
+                        <span class="text">Contact</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="main-content">
+            <div class="image">
+                <p id="but_cli">Let's Cook &nbsp; <i class="fa-solid fa-right-long"></i></p>
+            </div>
+
+        </div>
+        <div class="details">
+            <div class="detail-box">Discover the joy of cooking with our vast collection of recipes from around the world. Whether you're looking to try something new or perfect an old favorite, RecipeFinder has you covered.</div>
+            <div class="detail-box">Type your favorite dish, cuisine, or ingredient in the search bar and let us guide you to a delicious recipe!</div>
+            <div class="detail-box">Cooking is more than following instructions—it's an experience! Dive into our video section to watch, learn, and master new recipes. Perfect for beginners and pros alike.</div>
+        </div>
+    </div>
+    
+    <hr>
+    &nbsp;
+        <footer class="foot" style="color: white; display: flex;justify-content: center;">
+            <div>
+                <span style="display: flex;justify-content: center;">Developed by </span>
+            
+                <div class="details" style="justify-content: space-between; ">
+                    <div class="detail-box" id="detail-box1">
+                        <image src="Debjeet.jpg" id="img-dev"></image>
+                        <h4>Debjeet Paul</h4>
+                             8910356075<br>
+                             debjeet450@gmail.com
+                    </div>
+                    
+                    <div class="detail-box" id="detail-box1">
+                        <image src="Shivam.jpg" id="img-dev"></image>
+                        <h4>Shivam Ghosh</h4>
+                            7596969916<br>
+                            shivamghosh09783@gmail.com 
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    <script>
+        // Check authentication status and update UI (Login/Logout buttons)
+    function checkAuthStatus() {
+        const user = localStorage.getItem("loggedInUser");
+        const loginButton = document.getElementById("login-btn");
+        const logoutButton = document.getElementById("logout-btn");
+        const userNameDisplay = document.getElementById("username");
+
+        if (user) {
+            const loggedInUser = JSON.parse(user);
+            loginButton.style.display = "none";
+            logoutButton.style.display = "block";
+            userNameDisplay.innerHTML = `Hello, ${loggedInUser.name}`;
+        } else {
+        loginButton.style.display = "block";
+        logoutButton.style.display = "none";
+        userNameDisplay.innerHTML = "";
+        }
+    }
+
+    // Logout functionality
+    document.getElementById("logout-btn").addEventListener("click", function() {
+        localStorage.removeItem("loggedInUser");
+        checkAuthStatus(); // Update UI on logout
+        window.location.href = "login.html"; // Redirect to login page
+    });
+
+    // Call checkAuthStatus on page load to update the UI
+    window.onload = checkAuthStatus;
+
+    </script>
+</body>
+
+</html>

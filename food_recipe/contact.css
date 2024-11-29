@@ -1,0 +1,96 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'outfit';
+    background-image: url(https://watermark.lovepik.com/photo/40015/5932.jpg_wh1200.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.contact-container {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.contact-left {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 20px;
+}
+
+.contact-left-title h2 {
+    font-weight: 600;
+    font-size: 40px;
+    margin-bottom: 5px;
+    color: rgb(42, 137, 205);
+}
+
+.contact-left-title hr {
+    border: none;
+    height: 5px;
+    width: 120px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    background-color: #a363aa;
+}
+
+.contact-inputs {
+    border: none;
+    width: 400px;
+    height: 50px;
+    padding-left: 25px;
+    font-weight: 500;
+    outline: none;
+    border-radius: 50px;
+    color: #666;
+}
+
+.contact-left textarea {
+    height: 140px;
+    padding-top: 15px;
+    border-radius: 20px;
+}
+
+.contact-inputs:focus {
+    border: 2px solid #ff994f;
+}
+
+.contact-inputs::placeholder {
+    color: #a9a9a9;
+}
+
+.contact-left button {
+    display: flex;
+    align-items: center;
+    padding: 15px 30px;
+    font-size: 16px;
+    color: #fff;
+    gap: 10px;
+    border: none;
+    border-radius: 50px;
+    background: linear-gradient(270deg, #ff994f, #fa6d86);
+    cursor: pointer;
+}
+
+.contact-left button img {
+    height: 15px;
+
+}
+
+
+@media (max-width:800px) {
+    .contact-inputs {
+        width: 80vw;
+    }
+
+    .contact-right {
+        display: none;
+    }
+}
