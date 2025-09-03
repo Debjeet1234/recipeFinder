@@ -11,6 +11,7 @@ body {
     background-image: url(https://t4.ftcdn.net/jpg/04/43/37/07/360_F_443370711_sqHRnSIQovW6uyQ5ZwDpd4kjCG8Q6swm.jpg);
     background-repeat: no-repeat;
     background-size: cover;
+    background-attachment: fixed;
 }
 
 .navigation{
@@ -277,4 +278,5 @@ body {
 
 #see-more-button:hover {
     background-color: #0056b3;
+
 }
